@@ -13,10 +13,13 @@ const useGetConversations = () => {
 
       try {
         console.log("Fetching conversations...");
-        const res = await fetch("http://localhost:3000/api/users", {
-          method: "GET",
-          credentials: "include", // Include cookies with the request
-        });
+        const res = await fetch(
+          "https://chat-app-india.onrender.com/api/users",
+          {
+            method: "GET",
+            credentials: "include", // Include cookies with the request
+          }
+        );
         console.log("Response received:", res);
 
         const data = await res.json();
