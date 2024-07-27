@@ -1,76 +1,64 @@
-// Importing the Conversation model
-import Conversation from "../models/coversation.model.js"; // Fix typo in filename
+import Conversation from "../models/coversation.model.js"; // Corrected import path
+import Message from "../models/message.model.js";
 
-// Importing the Message model
-import Message from "../models/message.model.js"; // Import Message model
-
-// Controller function to send a message
 export const sendMessage = async (req, res) => {
   try {
-    // Extracting message and receiverId from request body and params
     const { message } = req.body;
     const { id: receiverId } = req.params;
-
-    // Extracting senderId from the authenticated user
     const senderId = req.user._id;
 
-    // Finding an existing conversation between sender and receiver
+    // Find or create a conversation between the sender and receiver
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
     });
 
-    // If conversation does not exist, create a new one
     if (!conversation) {
       conversation = await Conversation.create({
         participants: [senderId, receiverId],
       });
     }
 
-    // Creating a new message
+    // Create a new message
     const newMessage = new Message({
       senderId,
       receiverId,
       message,
     });
 
-    // Add the message to the conversation
+    // Push the new message to the conversation's messages array
     if (newMessage) {
       conversation.messages.push(newMessage._id);
     }
 
-    // Saving both conversation and message
-    // Using Promise.all to run both save operations in parallel
+    // Save both the conversation and the new message in parallel
     await Promise.all([conversation.save(), newMessage.save()]);
 
-    // Respond with the newly created message
-    res.status(201).json({ newMessage: newMessage });
-  } catch (err) {
-    // Error handling
-    console.log(`Error sending message ${err.message}`);
-    res.status(500).json({ message: "Internal Server error" });
+    // Respond with the new message
+    res.status(201).json(newMessage);
+  } catch (error) {
+    console.log("Error in sendMessage controller: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 export const getMessages = async (req, res) => {
   try {
-    // Extracting userToChatId from request params
     const { id: userToChatId } = req.params;
-
-    // Extracting senderId from the authenticated user
     const senderId = req.user._id;
 
-    // Finding the conversation between sender and userToChatId
+    // Find the conversation and populate the messages
     const conversation = await Conversation.findOne({
       participants: { $all: [senderId, userToChatId] },
-    }).populate("messages");
+    }).populate("messages"); // NOT REFERENCE BUT ACTUAL MESSAGES
 
     if (!conversation) return res.status(200).json([]);
 
-    // Sending the messages as a JSON response
-    res.status(200).json({ messages: conversation.messages });
-  } catch (err) {
-    // Error handling
-    console.log(`Error retrieving messages: ${err.message}`);
-    res.status(500).json({ message: "Internal Server error" });
+    const messages = conversation.messages;
+
+    // Respond with the messages
+    res.status(200).json(messages);
+  } catch (error) {
+    console.log("Error in getMessages controller: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
