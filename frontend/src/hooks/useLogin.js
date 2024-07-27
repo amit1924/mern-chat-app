@@ -16,14 +16,17 @@ const useLogin = () => {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-        credentials: "include", // Include credentials (cookies)
-      });
+      const res = await fetch(
+        "https://chat-app-india.onrender.com/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+          credentials: "include", // Include credentials (cookies)
+        }
+      );
 
       const data = await res.json();
       if (data.error) {
