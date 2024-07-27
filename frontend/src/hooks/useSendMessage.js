@@ -11,7 +11,7 @@ const useSendMessage = () => {
     setLoading(true); // Set loading to true when starting to send the message
     try {
       const res = await fetch(
-        `http://localhost:3000/api/messages/send/${selectedConversation._id}`,
+        `https://chat-app-india.onrender.com/api/messages/send/${selectedConversation._id}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

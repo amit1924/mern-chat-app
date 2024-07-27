@@ -18,7 +18,7 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "https://chat-app-india.onrender.com", // Update this
+    origin: "https://chat-app-india.onrender.com", // Update this
     credentials: true,
   })
 );
