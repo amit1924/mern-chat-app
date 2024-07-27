@@ -1,5 +1,7 @@
+import path from "path";
 import express from "express";
 import dotenv from "dotenv";
+
 import authRoutes from "./routes/authroute.js";
 import messageRoutes from "./routes/messageroute.js";
 import userRoutes from "./routes/userroute.js";
@@ -9,6 +11,8 @@ import cors from "cors";
 import { app, server } from "./socket/socket.js";
 
 const PORT = process.env.PORT || 3000;
+
+const __dirname = path.resolve();
 
 dotenv.config();
 
@@ -25,9 +29,16 @@ app.use(cookieParser());
 
 //route middleware
 app.use("/api/auth", authRoutes);
-//http://localhost:3000/api/messages/send/123
+
 app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
+
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/frontend", "dist", "index.html"));
+});
+
 server.listen(PORT, () => {
   connectToMongoDB();
   console.log(`server listening on ${PORT}`);
