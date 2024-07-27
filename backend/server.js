@@ -16,11 +16,10 @@ const __dirname = path.resolve();
 
 dotenv.config();
 
-// Middleware configuration
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5000", // specify the frontend URL
-    credentials: true, // allow credentials to be sent
+    origin: process.env.CLIENT_URL || "https://chat-app-india.onrender.com", // Update this
+    credentials: true,
   })
 );
 
