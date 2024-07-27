@@ -1,5 +1,6 @@
-import Conversation from "../models/coversation.model.js"; // Corrected import path
+import Conversation from "../models/coversation.model.js";
 import Message from "../models/message.model.js";
+import { getReceiverSocketId, io } from "../socket/socket.js"; // Correctly import named exports
 
 export const sendMessage = async (req, res) => {
   try {
@@ -32,6 +33,13 @@ export const sendMessage = async (req, res) => {
 
     // Save both the conversation and the new message in parallel
     await Promise.all([conversation.save(), newMessage.save()]);
+
+    // Socket
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      // This method is to send a message to a specific client
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
 
     // Respond with the new message
     res.status(201).json(newMessage);

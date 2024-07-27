@@ -2,9 +2,11 @@ import { useEffect, useRef } from "react";
 import useGetMessages from "../../hooks/useGetMessages"; // Importing the custom hook for fetching messages
 import MessageSkeleton from "../skeletons/MessageSkeleton"; // Importing a skeleton component for loading state
 import Message from "./Message"; // Importing the Message component to display individual messages
+import useListenMessage from "../../hooks/useListenMessage";
 
 const Messages = () => {
   const { messages, loading } = useGetMessages(); // Fetch messages and loading state from the custom hook
+  useListenMessage();
   const lastMessageRef = useRef();
 
   useEffect(() => {
