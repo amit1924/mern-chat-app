@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "server": "nodemon backend/server.js",
-    "start":"node backend/server.js",
-    "build":"npm install && npm install --prefix frontend && npm run build --prefix frontend"
+    "start": "node backend/server.js",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "keywords": [],
   "author": "",
@@ -24,5 +24,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
